@@ -15,10 +15,10 @@
 typedef struct shadowDataNode{
     char *user;
     char hash[50];
-    int numDays[10];
-    int daysCanChange[10];
-    int daysMustChange[10];
-    int daysWarn[1];
+    int numDays;
+    int daysCanChange;
+    int daysMustChange;
+    int daysWarn;
     struct shadowDataNode *next, *prev;
     
 }shadowDataNode;
