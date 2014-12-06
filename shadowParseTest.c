@@ -33,7 +33,7 @@ typedef struct shadowDataNode{
 }shadowDataNode;
 
 typedef struct tempUser{
-    char userinfo[100];
+    char *userinfo;
 }tempUser;
 
 tempUser* create(){
@@ -45,7 +45,7 @@ tempUser* create(){
 
     for (i = 0; i<33; i++) {
         fgets(tempArray, 100, fp);
-        strcpy(users[i].userinfo, tempArray);
+        strcpy(tempUser.userinfo, tempArray);
         fseek(fp, 0, SEEK_CUR);
     }
     return users;
@@ -59,23 +59,23 @@ shadowDataNode *parse(shadowDataNode *head) {
 	head = malloc(sizeof(shadowDataNode));
 	x = head;
 	for (i = 0; i<33; i++) {
-		temp_str = strtok(users[i].userinfo, ":");
+		temp_str = strtok(tempUser.userinfo, ":");
 		x->user = temp_str;
 		printf("%s", temp_str);
 
-		temp_str = strtok(users[i].userinfo, ":");
+		temp_str = strtok(tempUser.userinfo, ":");
 		strcpy(x->hash, temp_str);
 
-		temp_str = strtok(users[i].userinfo, ":");
+		temp_str = strtok(tempUser.userinfo, ":");
 		x->numDays = (int)temp_str;
 
-		temp_str = strtok(users[i].userinfo, ":");
+		temp_str = strtok(tempuser.userinfo, ":");
 		x->daysCanChange = (int)temp_str;
 
-		temp_str = strtok(users[i].userinfo, ":");
+		temp_str = strtok(tempUser.userinfo, ":");
 		x->daysMustChange = (int)temp_str;
 
-		temp_str = strtok(users[i].userinfo, ":");
+		temp_str = strtok(tempUser.userinfo, ":");
 		x->daysWarn = (int)temp_str;
 
 		if(i != 32) {
