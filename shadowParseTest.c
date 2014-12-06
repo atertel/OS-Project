@@ -10,7 +10,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define shadowFile /Users/rich/Desktop/shadow_example.txt
+#define shadowFile "/Users/rich/Desktop/shadow_example.txt"
+
+
+char* createBigArray(FILE *fp){
+    char*bigArray;
+    fp = fopen(shadowFile, "rw");
+    fgets(bigArray, sizeof(bigArray), fp);
+    return bigArray;
+}
+
 
 typedef struct shadowDataNode{
     char *user;
@@ -36,15 +45,13 @@ int main(int argc, const char * argv[]) {
     size = atoi(array);
     shadowData *myUsers = (*shadowData)(malloc(sizeof(shadowData)));
     
-    for (i = 0; i<35; i++) {
+   
         temp_userName = strtok(array, ":");
         strcpy(myUsers[i].user, temp_userName);
-        temp_pwHash = (char*)strtok(NULL, ":");
-         strcpy(myUsers[i].hash, temp_pwHash);
+        temp_pwHash = *(char*)strtok(NULL, ":");
+        strcpy(myUsers[i].hash, temp_pwHash);
         
-        
-        
-    }
+    
     
     
     
