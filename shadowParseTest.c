@@ -30,15 +30,18 @@ int main(int argc, const char * argv[]) {
     void* p;
     char array[1000];
     char s[2] = ":";
+    char *temp_userName, temp_pwHash;
     fp = fopen("/Users/rich/Desktop/shadow_example.txt", "rw");
     fgets(array, sizeof(array), fp);
     size = atoi(array);
     shadowData *myUsers = (*shadowData)(malloc(sizeof(shadowData)));
     
     for (i = 0; i<35; i++) {
-        strtok(array, ":");
-        strcpy(myUsers[i].user, array);
-        p = (char*)strtok(NULL, ":");
+        temp_userName = strtok(array, ":");
+        strcpy(myUsers[i].user, temp_userName);
+        temp_pwHash = (char*)strtok(NULL, ":");
+         strcpy(myUsers[i].hash, temp_pwHash);
+        
         
         
     }
