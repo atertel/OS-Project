@@ -21,7 +21,6 @@
 
 #include "shadow_fs.h"
 #include "list.h"
-#include "Cash_list.h"
 #include <fuse.h>
 #include <stdio.h>
 #include <string.h>
