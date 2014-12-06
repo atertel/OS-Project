@@ -36,7 +36,6 @@ int main(int argc, const char * argv[]) {
     shadowData *myUsers = (*shadowData)(malloc(sizeof(shadowData)));
     
     for (i = 0; i<35; i++) {
-        fgets(array, sizeof(array), fp);
         strtok(array, ":");
         strcpy(myUsers[i].user, array);
         p = (char*)strtok(NULL, ":");
