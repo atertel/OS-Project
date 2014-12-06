@@ -14,7 +14,7 @@
 
 
 char* createBigArray(FILE *fp){
-    char*bigArray;
+    char* bigArray;
     fp = fopen(shadowFile, "rw");
     fgets(bigArray, sizeof(bigArray), fp);
     return bigArray;
