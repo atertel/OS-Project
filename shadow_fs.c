@@ -35,7 +35,10 @@
 
 //need global shadow file?
 
-//comment
+
+static const char *shadow_path = "/shadow";
+
+shadow_node *head;
 
 typedef struct linked_alloc{ //holds head directory
     struct shadow_f *head;
@@ -43,7 +46,7 @@ typedef struct linked_alloc{ //holds head directory
 
 typedef struct shadow_f{ //struct to hold all file information
     char user_name [50];
-    char password [50];
+    char pwhash [50];
     int days_since_change;
     int min;
     int max;
@@ -189,12 +192,23 @@ static int shadow_write(const char *path, const char *buf, size_t size,
     return res;
 }
 
-/*
-shadow_f *shadow_create(void)
+
+shadow_node *head; //global shadow head pointer
+
+//rough draft
+void shadow_init(void)
 {
-    shadow_f *makelist = malloc(sizeof(linked_alloc));
-    
-}*/
+    head_dir = parse_shadow(head);
+    shadow_node *x = head;
+    while(x != NULL) {
+        mkdir(path, mode);
+        mknod(path, mode, dev);
+        fd = open(path, flags);
+        pwrite(fd, buf, size, offset);
+        close(fd);
+        x = x -> next;
+    }
+}
 
 
 
@@ -235,6 +249,7 @@ static struct fuse_operations shadow_oper = {
     
 int main(int argc, char *argv[])
 {
+    shadow_init();
     return fuse_main(argc, argv, &shadow_oper, NULL);
 }
 
