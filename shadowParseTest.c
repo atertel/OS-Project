@@ -13,6 +13,7 @@
 #define shadowFile "/Users/rich/Desktop/shadow_example.txt"
 
 
+
 char* createBigArray(FILE *fp){
     char* bigArray;
     fp = fopen(shadowFile, "rw");
@@ -31,28 +32,28 @@ typedef struct shadowDataNode{
     struct shadowDataNode *next, *prev;
     
 }shadowDataNode;
-int main(int argc, const char * argv[]) {
+
+typedef struct tempUser{
+    char userinfo[100];
+}tempUser;
+
+tempUser* create(){
     FILE *fp;
-    int i = 0;
-    char* token;
-    int size;
-    void* p;
-    char array[1000];
-    char s[2] = ":";
-    char *temp_userName, temp_pwHash;
-    fp = fopen("/Users/rich/Desktop/shadow_example.txt", "rw");
-    fgets(array, sizeof(array), fp);
-    size = atoi(array);
-    shadowData *myUsers = (*shadowData)(malloc(sizeof(shadowData)));
+    tempUser *users = malloc(35*sizeof(tempUser));
+    char tempArray[100];
+    int i;
+    fp = fopen(shadowFile, "rw");
     
-   
-        temp_userName = strtok(array, ":");
-        strcpy(myUsers[i].user, temp_userName);
-        temp_pwHash = *(char*)strtok(NULL, ":");
-        strcpy(myUsers[i].hash, temp_pwHash);
-        
-    
-    
+    for (i = 0; i<33; i++) {
+        fgets(tempArray, 100, fp);
+        strcpy(users[i].userinfo, tempArray);
+        fseek(fp, 0, SEEK_CUR);
+    }
+
+    return users;
+}
+
+int main(int argc, const char * argv[]){
     
     
     
