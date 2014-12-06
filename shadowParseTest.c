@@ -53,6 +53,17 @@ tempUser* create(){
     return users;
 }
 
+typedef struct indivUser {
+	char user[100];
+}indivUser;
+
+indivUser* parse() {
+	char *temp_user
+	
+	for (i = 0; i<33; i++) {
+		
+}
+
 int main(int argc, const char * argv[]){
     
     
