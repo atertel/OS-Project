@@ -13,13 +13,6 @@
 #include "list.h"
 #define shadowFile "/Users/rich/Desktop/shadow_example.txt"
 
-char* createBigArray(FILE *fp){
-    char* bigArray;
-    fp = fopen(shadowFile, "rw");
-    fgets(bigArray, sizeof(bigArray), fp);
-    return bigArray;
-}
-
 
 typedef struct shadowDataNode{
     char *user;
@@ -29,99 +22,36 @@ typedef struct shadowDataNode{
     int daysMustChange;
     int daysWarn;
     struct shadowDataNode *next, *prev;
-
+    
 }shadowDataNode;
 
 typedef struct tempUser{
-    char *userinfo;
+    char userinfo[100];
 }tempUser;
 
 tempUser* create(){
+    tempUser *myUsers = malloc(33*sizeof(tempUser));
     FILE *fp;
-    tempUser *users = malloc(33*sizeof(tempUser));
     char tempArray[100];
     int i;
     fp = fopen(shadowFile, "rw");
-
+    
     for (i = 0; i<33; i++) {
         fgets(tempArray, 100, fp);
-        strcpy(tempUser.userinfo, tempArray);
+        strcpy(myUsers[i].userinfo, tempArray);
         fseek(fp, 0, SEEK_CUR);
     }
-    return users;
+    return myUsers;
 }
 
-shadowDataNode *parse(shadowDataNode *head) {
-	char *temp_str;
-	int i;
-	shadowDataNode *x;
-	tempUser *users = create();
-	head = malloc(sizeof(shadowDataNode));
-	x = head;
-	for (i = 0; i<33; i++) {
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->user = temp_str;
-		printf("%s", temp_str);
-
-		temp_str = strtok(tempUser.userinfo, ":");
-		strcpy(x->hash, temp_str);
-
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->numDays = (int)temp_str;
-
-		temp_str = strtok(tempuser.userinfo, ":");
-		x->daysCanChange = (int)temp_str;
-
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->daysMustChange = (int)temp_str;
-
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->daysWarn = (int)temp_str;
-
-		if(i != 32) {
-			x->next = malloc(sizeof(shadowDataNode));
-			x = x->next;
-		}
-	}
-	return head;
-}
-
-typedef struct userParse {
-	char indivUser[100];
-}userParse;
-
-
-
-/* userParse* parse(tempUser* users) {
-	int i, j, k;
-	char *temp_user;
-	userParse *user = malloc(33*sizeof(userParse));
-	for (k = 0; k<33; k++) {
-		user[k] = malloc(6*sizeof(userParse));
-	}
-	for (i = 0; i<33; i++) {
-		for(j = 0; j<6; j++) {
-			temp_user = strtok(users[i].userinfo, ":");
-			strcpy(user[i].indivUser, temp_user);
-		}
-	}
-	return user;
-} */
 
 
 
 int main(int argc, const char * argv[]){
-	/* int i;
-    tempUser *rando = create();
-	userParse* user = parse(rando);
-	for (i = 0; i<70; i++) {
-		printf("%s \n", user[i].indivUser);
-    } */
-	shadowDataNode *x;
-	x = parse(x);
-	while(x!=NULL) {
-		printf("%s", x->user);
-		x = x->next;
-	}
+    tempUser *myUsers = malloc(33*sizeof(tempUser));
+    myUsers = create();
+    for (int i = 0; i<33; i++) {
+        printf("%s", myUsers[i].userinfo);
+    }
     return 0;
 }
