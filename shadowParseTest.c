@@ -44,6 +44,41 @@ tempUser* create(){
     return myUsers;
 }
 
+shadowDataNode *parse(shadowDataNode *head) {
+	char *temp_str;
+	int i;
+	shadowDataNode *x;
+	tempUser *users = create();
+	head = malloc(sizeof(shadowDataNode));
+	x = head;
+	for (i = 0; i<33; i++) {
+		temp_str = strtok(tempUser.userinfo, ":");
+		x->user = temp_str;
+		printf("%s", temp_str);
+
+		temp_str = strtok(tempUser.userinfo, ":");
+		strcpy(x->hash, temp_str);
+
+		temp_str = strtok(tempUser.userinfo, ":");
+		x->numDays = (int)temp_str;
+
+		temp_str = strtok(tempuser.userinfo, ":");
+		x->daysCanChange = (int)temp_str;
+
+		temp_str = strtok(tempUser.userinfo, ":");
+		x->daysMustChange = (int)temp_str;
+
+		temp_str = strtok(tempUser.userinfo, ":");
+		x->daysWarn = (int)temp_str;
+
+		if(i != 32) {
+			x->next = malloc(sizeof(shadowDataNode));
+			x = x->next;
+		}
+	}
+	return head;
+}
+
 
 
 
