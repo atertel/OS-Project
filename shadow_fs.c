@@ -199,17 +199,29 @@ void shadow_init(void)
 		printf("%s:%s:%d:%d:%d:%d:::\n", x->user, x->pw_hash, x->numDays, x->daysCanChange, x->daysMustChange, x->daysWarn);
 		x = x->next;
 	}
-/*     shadow_node *x = head;
-    while(x != NULL) {
-        mkdir(path, mode);
-        mknod(path, mode, dev);
-        fd = open(path, flags);
-        pwrite(fd, buf, size, offset);
-        close(fd);
-        x = x -> next;
-    } */
+	int res;
+	shadow_node *x = head;
+	char *path = shadow_path;	
+	while(x != NULL) {
+		strcat(path, '/');
+		strcat(path, x->user);
+		res = mkdir(path, mode);
+		if (res == -1) return -errno;
+		res = mknod(path, mode, dev);
+		if (res == -1) return -errno;
+		fd = open(path, flags);
+		if (fd == -1) return -errno;
+		res = pwrite(fd, buf, size, offset);
+		close(fd);
+		if (res == -1) return -errno;
+		x = x -> next;
+	}
 }
-
+/*
+To Do;
+	- Set variables for system functions
+	- Edit the functions above to work with our directory structure
+*/
 
 
 static struct fuse_operations shadow_oper = {
