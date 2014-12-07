@@ -246,6 +246,7 @@ static struct fuse_operations shadow_oper = {
     .listxattr	= shadow_listxattr,
     .removexattr	= shadow_removexattr,
 #endif
+};
 
 int main(int argc, char *argv[])
 {
