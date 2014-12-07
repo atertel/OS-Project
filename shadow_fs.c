@@ -154,20 +154,20 @@ static int shadow_open(const char *path, struct fuse_file_info *fi)
 static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
-    size_t len;
-    (void) fi;
-    if(strcmp(path, hello_path) != 0)
-        return -ENOENT;
+	int fd;
+	int res;
 
-    len = strlen(hello_str);
-    if (offset < len) {
-        if (offset + size > len)
-            size = len - offset;
-        memcpy(buf, hello_str + offset, size);
-    } else
-        size = 0;
+	(void) fi;
+	fd = open(path, O_RDONLY);
+	if (fd == -1)
+		return -errno;
 
-    return size;
+	res = pread(fd, buf, size, offset);
+	if (res == -1)
+		res = -errno;
+
+	close(fd);
+	return res;
 }
 
 
@@ -213,33 +213,33 @@ void shadow_init(void)
 
 
 static struct fuse_operations shadow_oper = {
-    .getattr	= shadow_getattr,
+/*     .getattr	= shadow_getattr,
     .access		= shadow_access,
-    .readlink	= shadow_readlink,
+    .readlink	= shadow_readlink, */
 
     .readdir	= shadow_readdir, // need these
     .mknod		= shadow_mknod,
     .mkdir		= shadow_mkdir,
 
-    .symlink	= shadow_symlink,
+//    .symlink	= shadow_symlink,
 
     .unlink		= shadow_unlink, // need this
     .rmdir		= shadow_rmdir,
 
-    .rename		= shadow_rename,
+/*     .rename		= shadow_rename,
     .link		= shadow_link,
     .chmod		= shadow_chmod, //possibly
     .chown		= shadow_chown,
     .truncate	= shadow_truncate,
-    .utimens	= shadow_utimens,
+    .utimens	= shadow_utimens, */
 
     .open		= shadow_open, // need these
     .read		= shadow_read,
     .write		= shadow_write,
 
-    .statfs		= shadow_statfs, //possibly
+/*     .statfs		= shadow_statfs, //possibly
     .release	= shadow_release,
-    .fsync		= shadow_fsync,
+    .fsync		= shadow_fsync, */
 #ifdef HAVE_SETXATTR
     .setxattr	= shadow_setxattr,
     .getxattr	= shadow_getxattr,
