@@ -16,7 +16,7 @@
 
 typedef struct shadowDataNode{
     char *user;
-    char hash[50];
+    char pw_hash[50];
     int numDays;
     int daysCanChange;
     int daysMustChange;
@@ -52,24 +52,23 @@ shadowDataNode *parse(shadowDataNode *head) {
 	head = malloc(sizeof(shadowDataNode));
 	x = head;
 	for (i = 0; i<33; i++) {
-		temp_str = strtok(tempUser.userinfo, ":");
+		temp_str = strtok(users[i].userinfo, ":");
 		x->user = temp_str;
-		printf("%s", temp_str);
 
-		temp_str = strtok(tempUser.userinfo, ":");
-		strcpy(x->hash, temp_str);
+		temp_str = strtok(NULL, ":");
+		strcpy(x->pw_hash, temp_str);
 
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->numDays = (int)temp_str;
+		temp_str = strtok(NULL, ":");
+		x->numDays = atoi(temp_str);
 
-		temp_str = strtok(tempuser.userinfo, ":");
-		x->daysCanChange = (int)temp_str;
+		temp_str = strtok(NULL, ":");
+		x->daysCanChange = atoi(temp_str);
 
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->daysMustChange = (int)temp_str;
+		temp_str = strtok(NULL, ":");
+		x->daysMustChange = atoi(temp_str);
 
-		temp_str = strtok(tempUser.userinfo, ":");
-		x->daysWarn = (int)temp_str;
+		temp_str = strtok(NULL, ":");
+		x->daysWarn = atoi(temp_str);
 
 		if(i != 32) {
 			x->next = malloc(sizeof(shadowDataNode));
@@ -79,15 +78,19 @@ shadowDataNode *parse(shadowDataNode *head) {
 	return head;
 }
 
-
-
-
 int main(int argc, const char * argv[]){
- int i;
-    tempUser *myUsers = malloc(33*sizeof(tempUser));
-    myUsers = create();
-    for (i = 0; i<33; i++) {
-        printf("%s", myUsers[i].userinfo);
-    }
-    return 0;
+	int i;
+	shadowDataNode *x;
+	x = parse(x);
+	while(x != NULL) {
+		printf("user = %s\n", x->user);
+		printf("hash = %s\n", x->pw_hash);
+		printf("numDays = %d\n", x->numDays);
+  printf("daysCanChange = %d\n", x->daysCanChange);
+		printf("daysMustChange = %d\n", x->daysMustChange);
+		printf("daysWarn = %d\n", x->daysWarn);
+
+		x = x->next;
+	}
+     return 0;
 }
