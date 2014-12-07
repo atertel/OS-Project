@@ -85,7 +85,11 @@ shadowDataNode *parse(shadowDataNode *head) {
 int main(int argc, const char * argv[]){
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     int i;
+=======
+ int i;
+>>>>>>> FETCH_HEAD
 =======
  int i;
 >>>>>>> FETCH_HEAD
