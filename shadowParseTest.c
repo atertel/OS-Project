@@ -11,7 +11,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
-#define shadowFile "/Users/rich/Desktop/shadow_example.txt"
+#define shadowFile "shadow_example.txt"
 
 
 typedef struct shadowDataNode{
@@ -22,7 +22,7 @@ typedef struct shadowDataNode{
     int daysMustChange;
     int daysWarn;
     struct shadowDataNode *next, *prev;
-    
+
 }shadowDataNode;
 
 typedef struct tempUser{
@@ -35,7 +35,7 @@ tempUser* create(){
     char tempArray[100];
     int i;
     fp = fopen(shadowFile, "rw");
-    
+
     for (i = 0; i<33; i++) {
         fgets(tempArray, 100, fp);
         strcpy(myUsers[i].userinfo, tempArray);
@@ -83,9 +83,18 @@ shadowDataNode *parse(shadowDataNode *head) {
 
 
 int main(int argc, const char * argv[]){
+<<<<<<< HEAD
+<<<<<<< HEAD
+    int i;
+=======
+ int i;
+>>>>>>> FETCH_HEAD
+=======
+ int i;
+>>>>>>> FETCH_HEAD
     tempUser *myUsers = malloc(33*sizeof(tempUser));
     myUsers = create();
-    for (int i = 0; i<33; i++) {
+    for (i = 0; i<33; i++) {
         printf("%s", myUsers[i].userinfo);
     }
     return 0;
