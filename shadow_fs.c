@@ -1,6 +1,6 @@
 //  Patrick Coughlin
 //  shadow_fs.c
-//  
+//
 //
 //  Team 6
 //  CSCI 3411 - Operating Systems
@@ -34,14 +34,11 @@
 #include <sys/xattr.h>
 #endif
 
-//need global shadow file?
-
-
 static const char *shadow_path = "/shadow";
 
-shadow_node *head;
+shadowDataNode *head;
 
-typedef struct linked_alloc{ //holds head directory
+/* typedef struct linked_alloc{ //holds head directory
     struct shadow_f *head;
 } linked_dir;
 
@@ -55,7 +52,7 @@ typedef struct shadow_f{ //struct to hold all file information
     int inactive;
     int expire;
     struct shadow_f *next_f, *prev_f;
-}shadow_f;
+}shadow_f; */
 
 
 //edit
@@ -63,17 +60,17 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                        off_t offset, struct fuse_file_info *fi)
 {
 	//returns a pointer to the next entry
-	
+
     DIR *dp;
     struct dirent *de;
-    
+
     (void) offset;
     (void) fi;
-    
+
     dp = opendir(path);
     if (dp == NULL)
         return -errno;
-    
+
     while ((de = readdir(dp)) != NULL) {
         struct stat st;
         memset(&st, 0, sizeof(st));
@@ -82,7 +79,7 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
         if (filler(buf, de->d_name, &st, 0))
             break;
     }
-    
+
     closedir(dp);
     return 0;
 }
@@ -102,7 +99,7 @@ static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
         res = mknod(path, mode, rdev);
     if (res == -1)
         return -errno;
-    
+
     return 0;
 }
 
@@ -110,7 +107,7 @@ static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 static int shadow_mkdir(const char *path, mode_t mode)
 {
     int res;
-    
+
     res = mkdir(path, mode);
     if (res == -1)
         return -errno;
@@ -120,11 +117,11 @@ static int shadow_mkdir(const char *path, mode_t mode)
 static int shadow_unlink(const char *path)
 {
     int res;
-    
+
     res = unlink(path);
     if (res == -1)
         return -errno;
-    
+
     return 0;
 }
 
@@ -132,11 +129,11 @@ static int shadow_unlink(const char *path)
 static int shadow_rmdir(const char *path)
 {
     int res;
-    
+
     res = rmdir(path);
     if (res == -1)
         return -errno;
-    
+
     return 0;
 }
 
@@ -144,11 +141,11 @@ static int shadow_rmdir(const char *path)
 static int shadow_open(const char *path, struct fuse_file_info *fi)
 {
     int res;
-    
+
     res = open(path, fi->flags);
     if (res == -1)
         return -errno;
-    
+
     close(res);
     return 0;
 }
@@ -161,7 +158,7 @@ static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
     (void) fi;
     if(strcmp(path, hello_path) != 0)
         return -ENOENT;
-    
+
     len = strlen(hello_str);
     if (offset < len) {
         if (offset + size > len)
@@ -169,7 +166,7 @@ static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
         memcpy(buf, hello_str + offset, size);
     } else
         size = 0;
-    
+
     return size;
 }
 
@@ -179,28 +176,30 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 {
     int fd;
     int res;
-    
+
     (void) fi;
     fd = open(path, O_WRONLY);
     if (fd == -1)
         return -errno;
-    
+
     res = pwrite(fd, buf, size, offset);
     if (res == -1)
         res = -errno;
-    
+
     close(fd);
     return res;
 }
 
-
-shadow_node *head; //global shadow head pointer
-
 //rough draft
 void shadow_init(void)
 {
-    head_dir = parse_shadow(head);
-    shadow_node *x = head;
+    head = parse(head);
+	shadowDataNode *x=head;
+	while(x!=NULL) {
+		printf("%s:%s:%d:%d:%d:%d:::\n", x->user, x->pw_hash, x->numDays, x->daysCanChange, x->daysMustChange, x->daysWarn);
+		x = x->next;
+	}
+/*     shadow_node *x = head;
     while(x != NULL) {
         mkdir(path, mode);
         mknod(path, mode, dev);
@@ -208,7 +207,7 @@ void shadow_init(void)
         pwrite(fd, buf, size, offset);
         close(fd);
         x = x -> next;
-    }
+    } */
 }
 
 
@@ -217,27 +216,27 @@ static struct fuse_operations shadow_oper = {
     .getattr	= shadow_getattr,
     .access		= shadow_access,
     .readlink	= shadow_readlink,
-    
+
     .readdir	= shadow_readdir, // need these
     .mknod		= shadow_mknod,
     .mkdir		= shadow_mkdir,
-    
+
     .symlink	= shadow_symlink,
-   
+
     .unlink		= shadow_unlink, // need this
     .rmdir		= shadow_rmdir,
-    
+
     .rename		= shadow_rename,
     .link		= shadow_link,
     .chmod		= shadow_chmod, //possibly
     .chown		= shadow_chown,
     .truncate	= shadow_truncate,
     .utimens	= shadow_utimens,
-    
+
     .open		= shadow_open, // need these
     .read		= shadow_read,
     .write		= shadow_write,
-    
+
     .statfs		= shadow_statfs, //possibly
     .release	= shadow_release,
     .fsync		= shadow_fsync,
@@ -247,7 +246,7 @@ static struct fuse_operations shadow_oper = {
     .listxattr	= shadow_listxattr,
     .removexattr	= shadow_removexattr,
 #endif
-    
+
 int main(int argc, char *argv[])
 {
     shadow_init();
