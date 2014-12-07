@@ -21,6 +21,7 @@
 
 #include "shadow_fs.h"
 #include "list.h"
+#include "shadowParseTest.h"
 #include <fuse.h>
 #include <stdio.h>
 #include <string.h>
