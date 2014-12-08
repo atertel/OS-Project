@@ -109,7 +109,6 @@ static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 }
 
 
-
 static int shadow_mkdir(const char *path, mode_t mode)
 {
     //add dir to end of linked list
