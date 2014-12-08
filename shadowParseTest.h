@@ -82,6 +82,7 @@ shadowDataNode *parse(shadowDataNode *head) {
 			x = x->next;
 		}
 	}
+	free(users);
 	return head;
 }
 
@@ -100,5 +101,6 @@ char *deparse(shadowDataNode *x) {
 		strcat(shadow_line, ":");
 		strcat(shadow_line, itoa(x->daysWarn, str_int, 10));
 		strcat(shadow_line, ":::");
+    free(str_int);
 return shadow_line;
 }
