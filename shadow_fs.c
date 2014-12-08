@@ -59,7 +59,8 @@ typedef struct shadow_f{ //struct to hold all file information
 static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                        off_t offset, struct fuse_file_info *fi)
 {
-	//returns a pointer to the next entry
+	//returns a pointer to the next entry?
+    //don't know how to edit for linked list?
 
     DIR *dp;
     struct dirent *de;
@@ -87,6 +88,10 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 {
+    //edit to add a file node in a directory
+    //malloc space for file?
+    //
+    
     int res;
 
     if (S_ISREG(mode)) {
@@ -104,8 +109,12 @@ static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 }
 
 
+
 static int shadow_mkdir(const char *path, mode_t mode)
 {
+    //add dir to end of linked list
+    //add loop to count to end of ll, call mkdir at last node
+    
     int res;
 
     res = mkdir(path, mode);
@@ -116,6 +125,9 @@ static int shadow_mkdir(const char *path, mode_t mode)
 
 static int shadow_unlink(const char *path)
 {
+    //delete file
+    //anything special for linked list?
+    
     int res;
 
     res = unlink(path);
@@ -128,6 +140,9 @@ static int shadow_unlink(const char *path)
 
 static int shadow_rmdir(const char *path)
 {
+    //remove directory
+    //need to move pointer to next before deleting
+    
     int res;
 
     res = rmdir(path);
@@ -140,6 +155,8 @@ static int shadow_rmdir(const char *path)
 
 static int shadow_open(const char *path, struct fuse_file_info *fi)
 {
+    //anything special for linked list?
+    
     int res;
 
     res = open(path, fi->flags);
@@ -154,6 +171,8 @@ static int shadow_open(const char *path, struct fuse_file_info *fi)
 static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
+    //????
+    
 	int fd;
 	int res;
 
@@ -174,6 +193,8 @@ static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
 static int shadow_write(const char *path, const char *buf, size_t size,
                      off_t offset, struct fuse_file_info *fi)
 {
+    //?????
+    
     int fd;
     int res;
 
@@ -193,6 +214,8 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 //rough draft
 void shadow_init(void)
 {
+    //need to finish the inputs for the system calls
+    
     head = parse(head);
 	shadowDataNode *x=head;
 	while(x!=NULL) {
@@ -230,7 +253,7 @@ static struct fuse_operations shadow_oper = {
     .readlink	= shadow_readlink, */
 
     .readdir	= shadow_readdir, // need these
-    .mknod		= shadow_mknod,
+    .mknod		= shadow_mknod,q
     .mkdir		= shadow_mkdir,
 
 //    .symlink	= shadow_symlink,
