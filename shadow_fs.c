@@ -253,7 +253,7 @@ static struct fuse_operations shadow_oper = {
     .readlink	= shadow_readlink, */
 
     .readdir	= shadow_readdir, // need these
-    .mknod		= shadow_mknod,q
+    .mknod		= shadow_mknod,
     .mkdir		= shadow_mkdir,
 
 //    .symlink	= shadow_symlink,
