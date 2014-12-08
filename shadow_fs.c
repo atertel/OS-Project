@@ -210,37 +210,99 @@ static int shadow_write(const char *path, const char *buf, size_t size,
     return res;
 }
 
-//rough draft
-void shadow_init(void)
-{
-    //need to finish the inputs for the system calls
-    
-    head = parse(head);
-	shadowDataNode *x = head;
-	while(x != NULL) {
-		printf("%s:%s:%d:%d:%d:%d:::\n", x->user, x->pw_hash, x->numDays, x->daysCanChange, x->daysMustChange, x->daysWarn);
-		x = x->next;
-	}
-	int res;
+void shadow_init(void) {   
+	int res, i=0;
 	shadow_node *x = head;
 	char *path = shadow_path;
-	char *shadow_line;
-	while(x != NULL) {
-		strcat(path, '/');
-		strcat(path, x->user);
-		res = mkdir(path, mode);
+	char *attr_path = malloc(20*sizeof(char));
+	char *str_int = malloc(10*sizeof(char));
+    head = parse(head);
+	shadowDataNode *x = head;
+
+	for(i=0;i<lines;i++) { //lines is the length of the linked list
+		strcpy(path, shadow_path);
+		strcat(path, "/");
+		strcat(path, "user_");
+		strcat(path, "%s", itoa(i, str_int, 10));
+		strcat(path, "/");
+		res = mkdir(path, /* mode */ S_IRWXU);
+		if (res == -1) return -errno;		
+		
+		//Name
+		strcpy(attr_path, path);
+		strcat(attr_path, "Username");
+/* 		res = mknod(path, S_IRWXU, 0); //dev gets ignored, so we put in a simple value
 		if (res == -1) return -errno;
-		res = mknod(path, mode, dev);
-		if (res == -1) return -errno;
-		fd = open(path, flags);
+ */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
-		shadow_line = deparse(x);
-		res = pwrite(fd, shadow_line, sizeof(shadow_line), 0);
+		res = pwrite(fd, x->user, sizeof(x->user), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		x = x -> next;
+		
+		//Hash
+		strcpy(attr_path, path);
+		strcat(attr_path, "PW_Hash");
+/* 		res = mknod(path, S_IRWXU, 0);
+		if (res == -1) return -errno;
+ */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		if (fd == -1) return -errno;
+		res = pwrite(fd, x->pw_hash, sizeof(x->pw_hash), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Since_Change
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Since_Change");
+		if (res == -1) return -errno;
+ */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		if (fd == -1) return -errno;
+		itoa(x->numDays, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Can_Change
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Can_Change");
+/* 		res = mknod(path, S_IRWXU, 0);
+		if (res == -1) return -errno;
+ */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		if (fd == -1) return -errno;
+		itoa(x->daysCanChange, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Must_Change
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Until_Change");
+/* 		res = mknod(path, S_IRWXU, 0);
+		if (res == -1) return -errno;
+ */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		if (fd == -1) return -errno;
+		itoa(x->daysMustChange, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Warn
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Until_Warning");
+/* 		res = mknod(path, S_IRWXU, 0);
+		if (res == -1) return -errno;
+ */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		if (fd == -1) return -errno;
+		itoa(x->daysWarn, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		x = x->next //move to the ith node in the linked list
 	}
+	free(attr_path);
+	free(str_int);
 }
+		
 /*
 To Do;
 	- Set variables for system functions
