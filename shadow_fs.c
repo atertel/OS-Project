@@ -54,8 +54,17 @@ typedef struct shadow_f{ //struct to hold all file information
     struct shadow_f *next_f, *prev_f;
 }shadow_f; */
 
+static int shadow_getattr(const char *path, struct stat *stbuf)
+{
+	int res;
 
-//edit
+	res = lstat(path, stbuf);
+	if (res == -1)
+		return -errno;
+
+	return 0;
+}
+
 static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                        off_t offset, struct fuse_file_info *fi)
 {
@@ -192,7 +201,6 @@ static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
 static int shadow_write(const char *path, const char *buf, size_t size,
                      off_t offset, struct fuse_file_info *fi)
 {
-    //?????
     
     int fd;
     int res;
@@ -212,7 +220,6 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 
 void shadow_init(void) {   
 	int res, i=0;
-	shadow_node *x = head;
 	char *path = shadow_path;
 	char *attr_path = malloc(20*sizeof(char));
 	char *str_int = malloc(10*sizeof(char));
@@ -224,14 +231,14 @@ void shadow_init(void) {
 		strcat(path, "/");
 		strcat(path, "user_");
 		strcat(path, "%s", itoa(i, str_int, 10));
-		strcat(path, "/");
 		res = mkdir(path, /* mode */ S_IRWXU);
 		if (res == -1) return -errno;		
+		strcat(path, "/");
 		
 		//Name
 		strcpy(attr_path, path);
 		strcat(attr_path, "Username");
-		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		res = pwrite(fd, x->user, sizeof(x->user), 0);
 		close(fd);
@@ -240,7 +247,7 @@ void shadow_init(void) {
 		//Hash
 		strcpy(attr_path, path);
 		strcat(attr_path, "PW_Hash");
-		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		res = pwrite(fd, x->pw_hash, sizeof(x->pw_hash), 0);
 		close(fd);
@@ -249,7 +256,7 @@ void shadow_init(void) {
 		//Days_Since_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Since_Change");
-		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		itoa(x->numDays, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -259,7 +266,7 @@ void shadow_init(void) {
 		//Days_Can_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Can_Change");
-		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		itoa(x->daysCanChange, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -269,7 +276,7 @@ void shadow_init(void) {
 		//Days_Must_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Change");
-		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		itoa(x->daysMustChange, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -279,7 +286,7 @@ void shadow_init(void) {
 		//Days_Warn
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Warning");
-		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		itoa(x->daysWarn, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -300,9 +307,9 @@ To Do;
 
 
 static struct fuse_operations shadow_oper = {
-/*     .getattr	= shadow_getattr,
+     .getattr	= shadow_getattr,
     .access		= shadow_access,
-    .readlink	= shadow_readlink, */
+    .readlink	= shadow_readlink,
 
     .readdir	= shadow_readdir, // need these
     .mknod		= shadow_mknod,
