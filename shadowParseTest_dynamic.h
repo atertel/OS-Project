@@ -42,9 +42,9 @@ tempUser *create(){
 		fgets(tempArray, 100, fp);
 		if (strcmp(tempArray, tempArray_prev) != 0) {
 			myUsers = realloc(myUsers, (lines+1)*sizeof(tempUser));
-		strcpy(myUsers[lines].userinfo, tempArray);
-		fseek(fp, 0, SEEK_CUR);
-		lines++;
+			strcpy(myUsers[lines].userinfo, tempArray);
+			fseek(fp, 0, SEEK_CUR);
+			lines++;
 		}
 	}
 	while (strcmp(tempArray, tempArray_prev) != 0);
