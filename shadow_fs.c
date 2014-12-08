@@ -217,8 +217,8 @@ void shadow_init(void)
     //need to finish the inputs for the system calls
     
     head = parse(head);
-	shadowDataNode *x=head;
-	while(x!=NULL) {
+	shadowDataNode *x = head;
+	while(x != NULL) {
 		printf("%s:%s:%d:%d:%d:%d:::\n", x->user, x->pw_hash, x->numDays, x->daysCanChange, x->daysMustChange, x->daysWarn);
 		x = x->next;
 	}
