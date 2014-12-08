@@ -13,35 +13,42 @@
 #include "list.h"
 #define shadowFile "shadow_example.txt"
 
+int lines = 0;
 
 typedef struct shadowDataNode{
-    char *user;
-    char pw_hash[50];
-    int numDays;
-    int daysCanChange;
-    int daysMustChange;
-    int daysWarn;
-    struct shadowDataNode *next, *prev;
-
+	char *user;
+	char *pw_hash;
+	int numDays;
+	int daysCanChange;
+	int daysMustChange;
+	int daysWarn;
+	struct shadowDataNode *next, *prev;
+	
 }shadowDataNode;
 
 typedef struct tempUser{
-    char userinfo[100];
+	char userinfo[100];
 }tempUser;
 
-tempUser* create(){
-    tempUser *myUsers = malloc(33*sizeof(tempUser));
-    FILE *fp;
-    char tempArray[100];
-    int i;
-    fp = fopen(shadowFile, "rw");
-
-    for (i = 0; i<33; i++) {
-        fgets(tempArray, 100, fp);
-        strcpy(myUsers[i].userinfo, tempArray);
-        fseek(fp, 0, SEEK_CUR);
-    }
-    return myUsers;
+tempUser *create(){
+	int i;
+	tempUser *myUsers = malloc(sizeof(tempUser));
+	FILE *fp;
+	char tempArray[100], tempArray_prev[100];
+	lines = 0;
+	fp = fopen(shadowFile, "rw");
+	do{
+		strcpy(tempArray_prev, tempArray);
+		fgets(tempArray, 100, fp);
+		if (strcmp(tempArray, tempArray_prev) != 0) {
+			myUsers = realloc(myUsers, (lines+1)*sizeof(tempUser));
+		strcpy(myUsers[lines].userinfo, tempArray);
+		fseek(fp, 0, SEEK_CUR);
+		lines++;
+		}
+	}
+	while (strcmp(tempArray, tempArray_prev) != 0);
+	return myUsers;
 }
 
 shadowDataNode *parse(shadowDataNode *head) {
@@ -51,12 +58,12 @@ shadowDataNode *parse(shadowDataNode *head) {
 	tempUser *users = create();
 	head = malloc(sizeof(shadowDataNode));
 	x = head;
-	for (i = 0; i<33; i++) {
+	for (i = 0; i<lines; i++) {
 		temp_str = strtok(users[i].userinfo, ":");
 		x->user = temp_str;
 
 		temp_str = strtok(NULL, ":");
-		strcpy(x->pw_hash, temp_str);
+		x->pw_hash = temp_str;
 
 		temp_str = strtok(NULL, ":");
 		x->numDays = atoi(temp_str);
@@ -70,10 +77,19 @@ shadowDataNode *parse(shadowDataNode *head) {
 		temp_str = strtok(NULL, ":");
 		x->daysWarn = atoi(temp_str);
 
-		if(i != 32) {
+		if(i != (lines-1)) {
 			x->next = malloc(sizeof(shadowDataNode));
 			x = x->next;
 		}
 	}
 	return head;
+}
+
+int main() {
+	shadowDataNode *head=parse(head);
+	shadowDataNode *x=head;
+	while(x!=NULL) {
+		printf("%s:%s:%d:%d:%d:%d:::\n", x->user, x->pw_hash, x->numDays, x->daysCanChange, x->daysMustChange, x->daysWarn);
+		x = x->next;
+	}
 }
