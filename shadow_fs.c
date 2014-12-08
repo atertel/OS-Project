@@ -231,9 +231,7 @@ void shadow_init(void) {
 		//Name
 		strcpy(attr_path, path);
 		strcat(attr_path, "Username");
-/* 		res = mknod(path, S_IRWXU, 0); //dev gets ignored, so we put in a simple value
-		if (res == -1) return -errno;
- */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
 		res = pwrite(fd, x->user, sizeof(x->user), 0);
 		close(fd);
@@ -242,9 +240,7 @@ void shadow_init(void) {
 		//Hash
 		strcpy(attr_path, path);
 		strcat(attr_path, "PW_Hash");
-/* 		res = mknod(path, S_IRWXU, 0);
-		if (res == -1) return -errno;
- */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
 		res = pwrite(fd, x->pw_hash, sizeof(x->pw_hash), 0);
 		close(fd);
@@ -253,8 +249,7 @@ void shadow_init(void) {
 		//Days_Since_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Since_Change");
-		if (res == -1) return -errno;
- */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
 		itoa(x->numDays, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -264,9 +259,7 @@ void shadow_init(void) {
 		//Days_Can_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Can_Change");
-/* 		res = mknod(path, S_IRWXU, 0);
-		if (res == -1) return -errno;
- */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
 		itoa(x->daysCanChange, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -276,9 +269,7 @@ void shadow_init(void) {
 		//Days_Must_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Change");
-/* 		res = mknod(path, S_IRWXU, 0);
-		if (res == -1) return -errno;
- */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
 		itoa(x->daysMustChange, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
@@ -288,9 +279,7 @@ void shadow_init(void) {
 		//Days_Warn
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Warning");
-/* 		res = mknod(path, S_IRWXU, 0);
-		if (res == -1) return -errno;
- */		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
+		fd = open(path, O_CREAT | O_EXCL | O_WRONLY);
 		if (fd == -1) return -errno;
 		itoa(x->daysWarn, str_int, 10);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
