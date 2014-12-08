@@ -38,22 +38,6 @@ static const char *shadow_path = "/shadow";
 
 shadowDataNode *head;
 
-/* typedef struct linked_alloc{ //holds head directory
-    struct shadow_f *head;
-} linked_dir;
-
-typedef struct shadow_f{ //struct to hold all file information
-    char user_name [50];
-    char pwhash [50];
-    int days_since_change;
-    int min;
-    int max;
-    int warn;
-    int inactive;
-    int expire;
-    struct shadow_f *next_f, *prev_f;
-}shadow_f; */
-
 static int shadow_getattr(const char *path, struct stat *stbuf)
 {
 	int res;
@@ -68,8 +52,6 @@ static int shadow_getattr(const char *path, struct stat *stbuf)
 static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
                        off_t offset, struct fuse_file_info *fi)
 {
-	//returns a pointer to the next entry?
-    //don't know how to edit for linked list?
 
     DIR *dp;
     struct dirent *de;
@@ -97,10 +79,7 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 {
-    //edit to add a file node in a directory
-    //malloc space for file?
-    //
-    
+   
     int res;
 
     if (S_ISREG(mode)) {
@@ -120,8 +99,6 @@ static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 
 static int shadow_mkdir(const char *path, mode_t mode)
 {
-    //add dir to end of linked list
-    //add loop to count to end of ll, call mkdir at last node
     
     int res;
 
@@ -133,8 +110,6 @@ static int shadow_mkdir(const char *path, mode_t mode)
 
 static int shadow_unlink(const char *path)
 {
-    //delete file
-    //anything special for linked list?
     
     int res;
 
@@ -148,8 +123,6 @@ static int shadow_unlink(const char *path)
 
 static int shadow_rmdir(const char *path)
 {
-    //remove directory
-    //need to move pointer to next before deleting
     
     int res;
 
@@ -163,8 +136,7 @@ static int shadow_rmdir(const char *path)
 
 static int shadow_open(const char *path, struct fuse_file_info *fi)
 {
-    //anything special for linked list?
-    
+   
     int res;
 
     res = open(path, fi->flags);
@@ -179,7 +151,6 @@ static int shadow_open(const char *path, struct fuse_file_info *fi)
 static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
-    //????
     
 	int fd;
 	int res;
@@ -216,6 +187,86 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 
     close(fd);
     return res;
+}
+
+void shadow_update() { //Unfinished; Should write back to the shadow file from Directory Structure
+	int res, i=0;
+	char *path = shadow_path;
+	char *attr_path = malloc(20*sizeof(char));
+	char *str_int = malloc(10*sizeof(char));
+
+	for(i=0;i<lines;i++) { //lines is the length of the linked list
+		strcpy(path, shadow_path);
+		strcat(path, "/");
+		strcat(path, "user_");
+		strcat(path, "%s", itoa(i, str_int, 10));
+		res = mkdir(path, /* mode */ S_IRWXU);
+		if (res == -1) return -errno;		
+		strcat(path, "/");
+		
+		//Name
+		strcpy(attr_path, path);
+		strcat(attr_path, "Username");
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		if (fd == -1) return -errno;
+		res = pwrite(fd, x->user, sizeof(x->user), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Hash
+		strcpy(attr_path, path);
+		strcat(attr_path, "PW_Hash");
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		if (fd == -1) return -errno;
+		res = pwrite(fd, x->pw_hash, sizeof(x->pw_hash), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Since_Change
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Since_Change");
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		if (fd == -1) return -errno;
+		itoa(x->numDays, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Can_Change
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Can_Change");
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		if (fd == -1) return -errno;
+		itoa(x->daysCanChange, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Must_Change
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Until_Change");
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		if (fd == -1) return -errno;
+		itoa(x->daysMustChange, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		//Days_Warn
+		strcpy(attr_path, path);
+		strcat(attr_path, "Days_Until_Warning");
+		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		if (fd == -1) return -errno;
+		itoa(x->daysWarn, str_int, 10);
+		res = pwrite(fd, str_int, sizeof(str_int), 0);
+		close(fd);
+		if (res == -1) return -errno;
+		
+		x = x->next //move to the ith node in the linked list
+	}
+	free(attr_path);
+	free(str_int);
+	
 }
 
 void shadow_init(void) {   
