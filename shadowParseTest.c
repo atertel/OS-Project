@@ -23,7 +23,7 @@ typedef struct shadowDataNode{
 	int daysMustChange;
 	int daysWarn;
 	struct shadowDataNode *next, *prev;
-	
+
 }shadowDataNode;
 
 typedef struct tempUser{
@@ -85,11 +85,29 @@ shadowDataNode *parse(shadowDataNode *head) {
 	return head;
 }
 
+char *deparse(shadowDataNode *x) {
+	char *str_int = malloc(10*sizeof(char));
+	char *shadow_line = malloc(100*sizeof(char));
+    strcpy(shadow_line, x->user);
+		strcat(shadow_line, ":");
+		strcat(shadow_line, x->pw_hash);
+		strcat(shadow_line, ":");
+		strcat(shadow_line, itoa(x->numDays, str_int, 10));
+		strcat(shadow_line, ":");
+		strcat(shadow_line, itoa(x->daysCanChange, str_int, 10));
+		strcat(shadow_line, ":");
+		strcat(shadow_line, itoa(x->daysMustChange, str_int, 10));
+		strcat(shadow_line, ":");
+		strcat(shadow_line, itoa(x->daysWarn, str_int, 10));
+		strcat(shadow_line, ":::");
+return shadow_line;
+}
+
 int main() {
 	shadowDataNode *head=parse(head);
 	shadowDataNode *x=head;
 	while(x!=NULL) {
-		printf("%s:%s:%d:%d:%d:%d:::\n", x->user, x->pw_hash, x->numDays, x->daysCanChange, x->daysMustChange, x->daysWarn);
+    printf("%s\n", deparse(x));
 		x = x->next;
 	}
 }
