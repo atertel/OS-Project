@@ -223,7 +223,8 @@ void shadow_init(void)
 	}
 	int res;
 	shadow_node *x = head;
-	char *path = shadow_path;	
+	char *path = shadow_path;
+	char *shadow_line;
 	while(x != NULL) {
 		strcat(path, '/');
 		strcat(path, x->user);
@@ -233,7 +234,8 @@ void shadow_init(void)
 		if (res == -1) return -errno;
 		fd = open(path, flags);
 		if (fd == -1) return -errno;
-		res = pwrite(fd, buf, size, offset);
+		shadow_line = deparse(x);
+		res = pwrite(fd, shadow_line, sizeof(shadow_line), 0);
 		close(fd);
 		if (res == -1) return -errno;
 		x = x -> next;
