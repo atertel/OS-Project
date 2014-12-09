@@ -48,7 +48,7 @@ static int shadow_getattr(const char *path, struct stat *stbuf)
 	int res;
 	
 
-	res = lstat(path, stbuf);
+	res = lstat(shadow_path, stbuf);
 	if (res == -1)
 		return -errno;
 
