@@ -352,6 +352,7 @@ static int shadow_init(void) {
 
 		x = x->next; //move to the ith node in the linked list
 	}
+	free(path);
 	free(attr_path);
 	free(str_int);
 	return 0;
