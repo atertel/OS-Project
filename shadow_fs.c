@@ -65,7 +65,8 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     (void) fi;
 
     dp = opendir(shadow_path);
-	echo shadow_path;
+	echo heldsdasda;
+	echo(shadow_path);
     if (dp == NULL)
         return -errno;
 
