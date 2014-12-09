@@ -286,7 +286,7 @@ static int shadow_init(void) {
 		strcpy(path, shadow_path);
 		strcat(path, "/");
 		strcat(path, "user_");
-	    snprintf(str_int, sizeof(str_int), "%d", i);
+    snprintf(str_int, sizeof(str_int), "%d", i);
 		strcat(path, str_int);
 		res = mkdir(path, S_IRWXU);
 		if (res == -1) return -errno;
