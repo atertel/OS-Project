@@ -314,7 +314,7 @@ static int shadow_init(void) {
 		strcat(attr_path, "Days_Since_Change");
 		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
-		itoa(x->numDays, str_int, 10);
+	    snprintf(str_int, sizeof(str_int), "%d", x->numDays);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
@@ -324,7 +324,7 @@ static int shadow_init(void) {
 		strcat(attr_path, "Days_Can_Change");
 		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
-		itoa(x->daysCanChange, str_int, 10);
+		snprintf(str_int, sizeof(str_int), "%d", x->daysCanChange);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
@@ -334,7 +334,7 @@ static int shadow_init(void) {
 		strcat(attr_path, "Days_Until_Change");
 		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
-		itoa(x->daysMustChange, str_int, 10);
+		snprintf(str_int, sizeof(str_int), "%d", x->daysMustChange);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
@@ -344,7 +344,7 @@ static int shadow_init(void) {
 		strcat(attr_path, "Days_Until_Warning");
 		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
-		itoa(x->daysWarn, str_int, 10);
+		snprintf(str_int, sizeof(str_int), "%d", x->daysWarn);
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
