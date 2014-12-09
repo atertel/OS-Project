@@ -176,7 +176,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
     int fd;
     int res;
 
-    (void) fi;
+    (void) fi; 
     fd = open(path, O_WRONLY);
     if (fd == -1)
         return -errno;
@@ -398,4 +398,9 @@ int main(int argc, char *argv[])
     shadow_init();
     return fuse_main(argc, argv, &shadow_oper, NULL);
 }
-
+//Note: Most use getattr
+//ls - getattr & readdir
+//cd - getattr
+//echo - write
+//cat - read
+//mkdir - mkdir
