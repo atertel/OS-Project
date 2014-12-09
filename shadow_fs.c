@@ -189,7 +189,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
     return res;
 }
 
-void shadow_update() { //Unfinished; Should write back to the shadow file from Directory Structure
+/* void shadow_update() { //Unfinished; Should write back to the shadow file from Directory Structure
 	int res, i=0;
 	char *path = shadow_path;
 	char *attr_path = malloc(20*sizeof(char));
@@ -200,7 +200,7 @@ void shadow_update() { //Unfinished; Should write back to the shadow file from D
 		strcat(path, "/");
 		strcat(path, "user_");
 		strcat(path, "%s", itoa(i, str_int, 10));
-		res = mkdir(path, /* mode */ S_IRWXU);
+		res = mkdir(path, S_IRWXU);
 		if (res == -1) return -errno;		
 		strcat(path, "/");
 		
@@ -268,10 +268,10 @@ void shadow_update() { //Unfinished; Should write back to the shadow file from D
 	free(str_int);
 	
 }
-
-void shadow_init(void) {   
+ */
+static int shadow_init(void) {   
 	int res, i=0;
-	char *path = shadow_path;
+	char *path;
 	char *attr_path = malloc(20*sizeof(char));
 	char *str_int = malloc(10*sizeof(char));
     head = parse(head);
@@ -281,15 +281,15 @@ void shadow_init(void) {
 		strcpy(path, shadow_path);
 		strcat(path, "/");
 		strcat(path, "user_");
-		strcat(path, "%s", itoa(i, str_int, 10));
-		res = mkdir(path, /* mode */ S_IRWXU);
+		strcat(path, itoa(i, str_int, 10));
+		res = mkdir(path, S_IRWXU);
 		if (res == -1) return -errno;		
 		strcat(path, "/");
 		
 		//Name
 		strcpy(attr_path, path);
 		strcat(attr_path, "Username");
-		fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
+		int fd = open(attr_path, O_CREAT | O_EXCL | O_RDWR);
 		if (fd == -1) return -errno;
 		res = pwrite(fd, x->user, sizeof(x->user), 0);
 		close(fd);
@@ -344,10 +344,11 @@ void shadow_init(void) {
 		close(fd);
 		if (res == -1) return -errno;
 		
-		x = x->next //move to the ith node in the linked list
+		x = x->next; //move to the ith node in the linked list
 	}
 	free(attr_path);
 	free(str_int);
+	return 0;
 }
 		
 /*
@@ -358,44 +359,36 @@ To Do;
 
 
 static struct fuse_operations shadow_oper = {
-     .getattr	= shadow_getattr,
-    .access		= shadow_access,
+    .getattr	= shadow_getattr,
+/*     .access		= shadow_access,
     .readlink	= shadow_readlink,
-
+ */
     .readdir	= shadow_readdir, // need these
     .mknod		= shadow_mknod,
     .mkdir		= shadow_mkdir,
 
-//    .symlink	= shadow_symlink,
-
     .unlink		= shadow_unlink, // need this
     .rmdir		= shadow_rmdir,
 
-/*     .rename		= shadow_rename,
-    .link		= shadow_link,
-    .chmod		= shadow_chmod, //possibly
-    .chown		= shadow_chown,
-    .truncate	= shadow_truncate,
-    .utimens	= shadow_utimens, */
+/*     .rename		= shadow_rename, */
 
     .open		= shadow_open, // need these
     .read		= shadow_read,
     .write		= shadow_write,
 
-/*     .statfs		= shadow_statfs, //possibly
-    .release	= shadow_release,
-    .fsync		= shadow_fsync, */
 #ifdef HAVE_SETXATTR
-    .setxattr	= shadow_setxattr,
-    .getxattr	= shadow_getxattr,
-    .listxattr	= shadow_listxattr,
-    .removexattr	= shadow_removexattr,
+    .setxattr	 = shadow_setxattr,
+    .getxattr	 = shadow_getxattr,
+    .listxattr	 = shadow_listxattr,
+    .removexattr = shadow_removexattr,
 #endif
 };
 
 int main(int argc, char *argv[])
 {
-    shadow_init();
+	int res;
+	res = shadow_init();
+	if (res == -1) return -errno;
     return fuse_main(argc, argv, &shadow_oper, NULL);
 }
 //Note: Most use getattr
