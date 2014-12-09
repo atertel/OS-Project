@@ -39,7 +39,7 @@
 #include <sys/xattr.h>
 #endif
 
-static const char *shadow_path = "/shadow";
+static const char *shadow_path = "/shadow_fs";
 
 shadowDataNode *head;
 
