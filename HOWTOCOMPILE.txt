@@ -1,0 +1,2 @@
+To compile the program run 'gcc shadow_fs.c -o shadowfs -D_FILE_OFFSET_BITS=64 -lfuse'
+
