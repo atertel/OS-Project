@@ -108,7 +108,7 @@ static int shadow_mkdir(const char *path, mode_t mode)
 
     int res;
 
-    res = mkdir(shadow_path, mode);
+    res = mkdir("/tmp/fuse", mode);
     if (res == -1)
         return -errno;
 }
