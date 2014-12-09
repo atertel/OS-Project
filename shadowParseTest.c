@@ -2,10 +2,10 @@
 //  main.c
 //  shadow_parse
 //
-//  Created by Richard Lancia on 12/4/14.
-//  Copyright (c) 2014 Richard Lancia. All rights reserved.
+//  Created by Richard Lancia, Cassius Ali, Pat Coughlin, and Alex Ertel on 12/4/14.
+//  Copyright (c) 2014 Richard Lancia, Cassius Ali, Pat Coughlin, and Alex Ertel. All rights reserved.
 //
-//test
+//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,7 +31,6 @@ typedef struct tempUser{
 }tempUser;
 
 tempUser *create(){
-	int i;
 	tempUser *myUsers = malloc(sizeof(tempUser));
 	FILE *fp;
 	char tempArray[100], tempArray_prev[100];
@@ -42,9 +41,9 @@ tempUser *create(){
 		fgets(tempArray, 100, fp);
 		if (strcmp(tempArray, tempArray_prev) != 0) {
 			myUsers = realloc(myUsers, (lines+1)*sizeof(tempUser));
-		strcpy(myUsers[lines].userinfo, tempArray);
-		fseek(fp, 0, SEEK_CUR);
-		lines++;
+			strcpy(myUsers[lines].userinfo, tempArray);
+			fseek(fp, 0, SEEK_CUR);
+			lines++;
 		}
 	}
 	while (strcmp(tempArray, tempArray_prev) != 0);
@@ -90,17 +89,17 @@ char *deparse(shadowDataNode *x) {
 	char *str_int = malloc(10*sizeof(char));
 	char *shadow_line = malloc(100*sizeof(char));
     strcpy(shadow_line, x->user);
-		strcat(shadow_line, ":");
-		strcat(shadow_line, x->pw_hash);
-		strcat(shadow_line, ":");
-		strcat(shadow_line, itoa(x->numDays, str_int, 10));
-		strcat(shadow_line, ":");
-		strcat(shadow_line, itoa(x->daysCanChange, str_int, 10));
-		strcat(shadow_line, ":");
-		strcat(shadow_line, itoa(x->daysMustChange, str_int, 10));
-		strcat(shadow_line, ":");
-		strcat(shadow_line, itoa(x->daysWarn, str_int, 10));
-		strcat(shadow_line, ":::");
+	strcat(shadow_line, ":");
+	strcat(shadow_line, x->pw_hash);
+	strcat(shadow_line, ":");
+	strcat(shadow_line, snprintf(str_int, sizeof(str_int), "%d", x->numDays));
+	strcat(shadow_line, ":");
+	strcat(shadow_line, snprintf(str_int, sizeof(str_int), "%d", x->daysCanChange));
+	strcat(shadow_line, ":");
+	strcat(shadow_line, snprintf(str_int, sizeof(str_int), "%d", x->daysMustChange));
+	strcat(shadow_line, ":");
+	strcat(shadow_line, snprintf(str_int, sizeof(str_int), "%d", x->daysWarn));
+	strcat(shadow_line, ":::");
     free(str_int);
 return shadow_line;
 }
@@ -109,7 +108,7 @@ int main() {
 	shadowDataNode *head=parse(head);
 	shadowDataNode *x=head;
 	while(x!=NULL) {
-    printf("%s\n", deparse(x));
+		printf("%s\n", deparse(x));
 		x = x->next;
 	}
 }
