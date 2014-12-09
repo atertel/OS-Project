@@ -88,7 +88,7 @@ shadowDataNode *parse(shadowDataNode *head) {
 char *deparse(shadowDataNode *x) {
 	char *str_int = malloc(10*sizeof(char));
 	char *shadow_line = malloc(100*sizeof(char));
-    strcpy(shadow_line, x->user);
+  strcpy(shadow_line, x->user);
 	strcat(shadow_line, ":");
 	strcat(shadow_line, x->pw_hash);
 	strcat(shadow_line, ":");

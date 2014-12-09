@@ -3,7 +3,7 @@
   Cassius Ali, pcali41@gwmail.gwu.edu
   Richard Lancia, rlancia7@gwmail.gwu.edu
   Alex Ertel, atertel@gwu.edu
-  
+
   shadow_fs.c
 
   Team 6
@@ -84,7 +84,7 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 {
-	
+
 	int res;
 
     if (S_ISREG(mode)) {
@@ -104,7 +104,7 @@ static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 
 static int shadow_mkdir(const char *path, mode_t mode)
 {
-    
+
     int res;
 
     res = mkdir(path, mode);
@@ -115,7 +115,7 @@ static int shadow_mkdir(const char *path, mode_t mode)
 
 static int shadow_unlink(const char *path)
 {
-    
+
     int res;
 
     res = unlink(path);
@@ -128,7 +128,7 @@ static int shadow_unlink(const char *path)
 
 static int shadow_rmdir(const char *path)
 {
-    
+
     int res;
 
     res = rmdir(path);
@@ -141,7 +141,7 @@ static int shadow_rmdir(const char *path)
 
 /* static int shadow_open(const char *path, struct fuse_file_info *fi)
 {
-   
+
     int res;
 
     res = open(path, fi->flags);
@@ -156,7 +156,7 @@ static int shadow_rmdir(const char *path)
 static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
                       struct fuse_file_info *fi)
 {
-    
+
 	int fd;
 	int res;
 
@@ -177,11 +177,11 @@ static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
 static int shadow_write(const char *path, const char *buf, size_t size,
                      off_t offset, struct fuse_file_info *fi)
 {
-    
+
     int fd;
     int res;
 
-    (void) fi; 
+    (void) fi;
     fd = open(path, O_WRONLY);
     if (fd == -1)
         return -errno;
@@ -206,9 +206,9 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		strcat(path, "user_");
 		strcat(path, "%s", itoa(i, str_int, 10));
 		res = mkdir(path, S_IRWXU);
-		if (res == -1) return -errno;		
+		if (res == -1) return -errno;
 		strcat(path, "/");
-		
+
 		//Name
 		strcpy(attr_path, path);
 		strcat(attr_path, "Username");
@@ -217,7 +217,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		res = pwrite(fd, x->user, sizeof(x->user), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Hash
 		strcpy(attr_path, path);
 		strcat(attr_path, "PW_Hash");
@@ -226,7 +226,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		res = pwrite(fd, x->pw_hash, sizeof(x->pw_hash), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Since_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Since_Change");
@@ -236,7 +236,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Can_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Can_Change");
@@ -246,7 +246,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Must_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Change");
@@ -256,7 +256,7 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Warn
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Warning");
@@ -266,17 +266,17 @@ static int shadow_write(const char *path, const char *buf, size_t size,
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		x = x->next //move to the ith node in the linked list
 	}
 	free(attr_path);
 	free(str_int);
-	
+
 }
  */
-static int shadow_init(void) {   
+static int shadow_init(void) {
 	int res, i=0;
-	char *path;
+	char *path = malloc(100*sizeof(char));
 	char *attr_path = malloc(20*sizeof(char));
 	char *str_int = malloc(10*sizeof(char));
     head = parse(head);
@@ -289,9 +289,9 @@ static int shadow_init(void) {
 	    snprintf(str_int, sizeof(str_int), "%d", i);
 		strcat(path, str_int);
 		res = mkdir(path, S_IRWXU);
-		if (res == -1) return -errno;		
+		if (res == -1) return -errno;
 		strcat(path, "/");
-		
+
 		//Name
 		strcpy(attr_path, path);
 		strcat(attr_path, "Username");
@@ -300,7 +300,7 @@ static int shadow_init(void) {
 		res = pwrite(fd, x->user, sizeof(x->user), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Hash
 		strcpy(attr_path, path);
 		strcat(attr_path, "PW_Hash");
@@ -309,7 +309,7 @@ static int shadow_init(void) {
 		res = pwrite(fd, x->pw_hash, sizeof(x->pw_hash), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Since_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Since_Change");
@@ -319,7 +319,7 @@ static int shadow_init(void) {
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Can_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Can_Change");
@@ -329,7 +329,7 @@ static int shadow_init(void) {
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Must_Change
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Change");
@@ -339,7 +339,7 @@ static int shadow_init(void) {
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		//Days_Warn
 		strcpy(attr_path, path);
 		strcat(attr_path, "Days_Until_Warning");
@@ -349,7 +349,7 @@ static int shadow_init(void) {
 		res = pwrite(fd, str_int, sizeof(str_int), 0);
 		close(fd);
 		if (res == -1) return -errno;
-		
+
 		x = x->next; //move to the ith node in the linked list
 	}
 	free(attr_path);
