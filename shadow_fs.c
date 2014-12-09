@@ -139,7 +139,7 @@ static int shadow_rmdir(const char *path)
 }
 
 
-static int shadow_open(const char *path, struct fuse_file_info *fi)
+/* static int shadow_open(const char *path, struct fuse_file_info *fi)
 {
    
     int res;
@@ -150,7 +150,7 @@ static int shadow_open(const char *path, struct fuse_file_info *fi)
 
     close(res);
     return 0;
-}
+} */
 
 
 static int shadow_read(const char *path, char *buf, size_t size, off_t offset,
@@ -363,7 +363,7 @@ static struct fuse_operations shadow_oper = {
     .mkdir		= shadow_mkdir,
     .unlink		= shadow_unlink,
     .rmdir		= shadow_rmdir,
-    .open		= shadow_open,
+/*     .open		= shadow_open, */
     .read		= shadow_read,
     .write		= shadow_write,
 };
