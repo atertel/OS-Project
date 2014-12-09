@@ -1,11 +1,15 @@
-//  Patrick Coughlin, Cassius Ali, Richard Lancia, Alex Ertel
-//  shadow_fs.c
-//
-//
-//  Team 6
-//  CSCI 3411 - Operating Systems
-//  Fall 2014
-//
+/*
+  Patrick Coughlin, ptcoughlin@gwmail.gwu.edu
+  Cassius Ali, pcali41@gwmail.gwu.edu
+  Richard Lancia, rlancia7@gwmail.gwu.edu
+  Alex Ertel, atertel@gwu.edu
+  
+  shadow_fs.c
+
+  Team 6
+  CSCI 3411 - Operating Systems
+  Fall 2014
+*/
 
 #define FUSE_USE_VERSION 26
 
@@ -14,6 +18,7 @@
 #endif
 
 #ifdef linux
+/* For pread()/pwrite() */
 #define _XOPEN_SOURCE 500
 #endif
 
@@ -361,13 +366,6 @@ static struct fuse_operations shadow_oper = {
     .open		= shadow_open,
     .read		= shadow_read,
     .write		= shadow_write,
-
-#ifdef HAVE_SETXATTR
-    .setxattr	 = shadow_setxattr,
-    .getxattr	 = shadow_getxattr,
-    .listxattr	 = shadow_listxattr,
-    .removexattr = shadow_removexattr,
-#endif
 };
 
 int main(int argc, char *argv[])
