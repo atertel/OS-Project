@@ -39,15 +39,16 @@
 #include <sys/xattr.h>
 #endif
 
-static const char *shadow_path = "/shadow_fs";
+static const char *shadow_path = "/tmp/fuse";
 
 shadowDataNode *head;
 
 static int shadow_getattr(const char *path, struct stat *stbuf)
 {
 	int res;
+	
 
-	res = lstat(path, stbuf);
+	res = lstat(shadow_path, stbuf);
 	if (res == -1)
 		return -errno;
 
@@ -65,8 +66,6 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     (void) fi;
 
     dp = opendir(shadow_path);
-	echo heldsdasda;
-	echo(shadow_path);
     if (dp == NULL)
         return -errno;
 
