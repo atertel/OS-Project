@@ -92,9 +92,11 @@ char *deparse(shadowDataNode *x) {
 	strcat(shadow_line, ":");
 	strcat(shadow_line, x->pw_hash);
 	strcat(shadow_line, ":");
+	//itoa(x->numDays, str_int, 10);
 	snprintf(str_int, sizeof(str_int), "%d", x->numDays);
 	strcat(shadow_line, str_int);
 	strcat(shadow_line, ":");
+
 	snprintf(str_int, sizeof(str_int), "%d", x->daysCanChange);
 	strcat(shadow_line, str_int);
 	strcat(shadow_line, ":");
