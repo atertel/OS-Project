@@ -39,7 +39,7 @@
 #include <sys/xattr.h>
 #endif
 
-static const char *shadow_path = "/tmp/fuse";
+static const char *shadow_path = "/tmp/fuse/shadow";
 
 shadowDataNode *head;
 
@@ -65,7 +65,7 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
     (void) offset;
     (void) fi;
 
-    dp = opendir("/tmp/fuse");
+    dp = opendir(shadow_path);
     if (dp == NULL)
         return -errno;
 
