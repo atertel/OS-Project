@@ -1,4 +1,4 @@
-//  Patrick Coughlin
+//  Patrick Coughlin, Cassius Ali, Richard Lancia, Alex Ertel
 //  shadow_fs.c
 //
 //
@@ -14,7 +14,6 @@
 #endif
 
 #ifdef linux
-/* For pread()/pwrite() */
 #define _XOPEN_SOURCE 500
 #endif
 
@@ -80,8 +79,8 @@ static int shadow_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 
 static int shadow_mknod(const char *path, mode_t mode, dev_t rdev)
 {
-   
-    int res;
+	
+	int res;
 
     if (S_ISREG(mode)) {
         res = open(path, O_CREAT | O_EXCL | O_WRONLY, mode);
@@ -351,29 +350,15 @@ static int shadow_init(void) {
 	free(str_int);
 	return 0;
 }
-		
-/*
-To Do;
-	- Set variables for system functions
-	- Edit the functions above to work with our directory structure
-*/
-
 
 static struct fuse_operations shadow_oper = {
     .getattr	= shadow_getattr,
-/*     .access		= shadow_access,
-    .readlink	= shadow_readlink,
- */
-    .readdir	= shadow_readdir, // need these
+    .readdir	= shadow_readdir,
     .mknod		= shadow_mknod,
     .mkdir		= shadow_mkdir,
-
-    .unlink		= shadow_unlink, // need this
+    .unlink		= shadow_unlink,
     .rmdir		= shadow_rmdir,
-
-/*     .rename		= shadow_rename, */
-
-    .open		= shadow_open, // need these
+    .open		= shadow_open,
     .read		= shadow_read,
     .write		= shadow_write,
 
@@ -392,9 +377,3 @@ int main(int argc, char *argv[])
 	if (res == -1) return -errno;
     return fuse_main(argc, argv, &shadow_oper, NULL);
 }
-//Note: Most use getattr
-//ls - getattr & readdir
-//cd - getattr
-//echo - write
-//cat - read
-//mkdir - mkdir
